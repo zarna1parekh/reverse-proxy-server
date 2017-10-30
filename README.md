@@ -1,13 +1,13 @@
 File description:
 
-code.py - The python code for reverse-proxy server
-dockerfile-mysql - Dockerfile to build the MYSQL DB image with info database and stats table
-dockerfile-python - Dockerfile to build Python Application image by running code.py
-init-db.sql - MYSQL DB Configs on starting
-mysql_env - MYSQL DB enviornment variables
-requirements.txt - Packages to be installed in the Python Application Image
-run.sh - To buil and start all the containers
-test.sh - Sample test script against run
+- code.py - The python code for reverse-proxy server
+- dockerfile-mysql - Dockerfile to build the MYSQL DB image with info database and stats table
+- dockerfile-python - Dockerfile to build Python Application image by running code.py
+- init-db.sql - MYSQL DB Configs on starting
+- mysql_env - MYSQL DB enviornment variables
+- requirements.txt - Packages to be installed in the Python Application Image
+- run.sh - To buil and start all the containers
+- test.sh - Sample test script against run
 
 Assumptions regarding packages:
 
