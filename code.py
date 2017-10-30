@@ -5,6 +5,8 @@ app = Flask(__name__)
 
 @app.route("/service/publicXMLFeed")
 def query():
+    ''' This function will fetch the query string from the localServer and redirect it to the appropriate server'''
+
     start_time = time.time()
     time_stamp = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(start_time))
     #print request.args
@@ -24,14 +26,17 @@ def query():
 
 @app.route("/stats")
 def get_stats():
+    '''This funtion will look up the MYSQL DB and return the slow querries and the count of each query, default will query slow queries for reponseTime>0.5s
+    example: "http://localhost:5000/stats" , "http://localhost:5000/stats?responseTime>0.7"
+    '''
     if request.query_string == "":
         query_str = 0.5
     else:
         query_str = request.query_string
     s = "Slow Response (greater than "+str(query_str)+"s):\n"
-    DB_HANDLE.execute("select timeStamp, url, responseTime from stats where responseTime > {0}".format(float(query_str)))
+    DB_HANDLE.execute("select timeStamp, url, responseTime from stats where {0}".format(query_str))
     for row in DB_HANDLE.fetchall():
-        s = s + str(row[1])+ " : " + str(row[2]) + "\n"
+        s = s + str(row[1])+ " : " + str(row[2]) + "s\n"
     s = s +"\nNumber of queries:\n"
     DB_HANDLE.execute("select url, count(*) from stats group by url")
     for row in DB_HANDLE.fetchall():
@@ -39,7 +44,7 @@ def get_stats():
     return Response(s,mimetype="text")
 
 
-if __name__ == "__main__":
+def setup_mysql_conn():
     global DB_HANDLE
     db = MySQLdb.connect(host="mysql_db", # your host, usually localhost
                      user="root",         # your username
@@ -47,4 +52,10 @@ if __name__ == "__main__":
                      db="info")         # name of the data base
     DB_HANDLE = db.cursor()
     db.autocommit(True)
+
+def main():
+    setup_mysql_conn()
     app.run(host="0.0.0.0")
+
+if __name__ == "__main__":
+    main()
