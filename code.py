@@ -29,22 +29,24 @@ def get_stats():
     '''This funtion will look up the MYSQL DB and return the slow querries and the count of each query, default will query slow queries for reponseTime>0.5s
     example: "http://localhost:5000/stats" , "http://localhost:5000/stats?responseTime>0.7"
     '''
-    if request.query_string == "":
-        query_str = 0.5
+    if request.query_string == "" or ">":
+        query_str = "responseTime>0.5"
     else:
         query_str = request.query_string
-    s = "Slow Response (greater than "+str(query_str)+"s):\n"
+    
+    stats = "Slow Response ("+str(query_str)+"s):\n"
     DB_HANDLE.execute("select timeStamp, url, responseTime from stats where {0}".format(query_str))
     for row in DB_HANDLE.fetchall():
-        s = s + str(row[1])+ " : " + str(row[2]) + "s\n"
-    s = s +"\nNumber of queries:\n"
+        stats = stats + str(row[1])+ " : " + str(row[2]) + "s\n"
+    stats = stats +"\nNumber of queries:\n"
     DB_HANDLE.execute("select url, count(*) from stats group by url")
     for row in DB_HANDLE.fetchall():
-        s = s + str(row[0]) + " : " + str(row[1]) + "\n"
-    return Response(s,mimetype="text")
+        stats = stats + str(row[0]) + " : " + str(row[1]) + "\n"
+    return Response(stats,mimetype="text")
 
 
 def setup_mysql_conn():
+    '''This function creates a sql connection to the mysql db container'''
     global DB_HANDLE
     db = MySQLdb.connect(host="mysql_db", # your host, usually localhost
                      user="root",         # your username
@@ -54,6 +56,7 @@ def setup_mysql_conn():
     db.autocommit(True)
 
 def main():
+    '''The main function'''
     setup_mysql_conn()
     app.run(host="0.0.0.0")
 
