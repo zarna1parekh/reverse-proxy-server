@@ -1,0 +1,43 @@
+version: "2"
+services:
+    python_code:
+        build:
+            context: .
+            dockerfile: dockerfile-python
+        ports:
+            - 5000
+        networks: 
+            - front-tier
+            - back-tier
+        links:
+            - mysql_db
+
+    mysql_db:
+        container_name: "mysql_db"
+        build:
+            context: .
+            dockerfile: dockerfile-mysql
+        ports:
+            - 6000:3306
+        networks:
+            - back-tier
+        volumes:
+            - /storage/docker/mysql-datadir:/var/lib/mysql
+
+    lb:
+        image: dockercloud/haproxy
+        ports:
+            - 8080:80
+        networks: 
+            - front-tier
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock 
+        links:
+            - python_code
+    
+networks:
+    front-tier: 
+        driver: bridge
+    back-tier:
+        driver: bridge
+            
