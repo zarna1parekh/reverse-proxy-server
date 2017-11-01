@@ -1,4 +1,5 @@
 #!/bin/bash
+
 curl "http://localhost:8080/stats"
 sleep 2
 curl "http://localhost:8080/service/publicXMLFeed?command=agencyList"

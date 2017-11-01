@@ -30,6 +30,8 @@ Make sure you are the root user and run.sh and test.sh have executable permissio
 
 To create the dockers: ./run.sh
 
+Please wait for the system to be up and stable once the above command returns (approximately 60s)
+
 To test the created dockers: ./test.sh
 test.sh contains a number of curl commands to query the data and statistics
 

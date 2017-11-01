@@ -25,3 +25,4 @@ sudo docker-compose up --build -d
 
 #to scale the python_application to 5 applications
 sudo docker-compose scale python_code=5
+sleep 60
